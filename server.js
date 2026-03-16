@@ -12,36 +12,31 @@ const mongoURI = 'mongodb://Gustavo:Noronha%402008@gustavo-shard-00-00.xvwmeod.m
 mongoose.connect(mongoURI)
   .then(() => console.log('✅ Conectado ao MongoDB Atlas com sucesso!'))
   .catch(err => {
-    console.error('❌ Erro de conexão com o Banco de Dados:');
-    console.error(err.message);
+    console.error('❌ Erro de conexão com o Banco de Dados:', err.message);
   });
 
-// --- MODELO DE DADOS ATUALIZADO ---
+// --- MODELO DE DADOS ---
 const Mensagem = mongoose.model('Mensagem', {
     nome: String,
-    destinatario: { type: String, default: 'Geral' }, // NOVO: Define quem recebe a mensagem
+    destinatario: { type: String, default: 'Geral' },
     texto: String,
     hora: String,
     dataEnvio: { type: Date, default: Date.now }
 });
 
 const io = new Server(server, {
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-    }
+    cors: { origin: "*", methods: ["GET", "POST"] }
 });
 
 // MAPA PARA RASTREAR QUEM ESTÁ ONLINE (ID do Socket -> Nome)
 const usuariosOnline = new Map();
 
-io.on('connection', async (socket) => {
+io.on('connection', (socket) => {
     console.log('🟢 Usuário conectado! ID:', socket.id);
 
     // REGISTRAR USUÁRIO NOVO E AVISAR TODOS
     socket.on('registrar_usuario', (nome) => {
         usuariosOnline.set(socket.id, nome);
-        // Envia a lista atualizada de nomes para todo mundo
         io.emit('lista_usuarios', Array.from(usuariosOnline.values())); 
     });
 
@@ -50,22 +45,21 @@ io.on('connection', async (socket) => {
         try {
             const historico = await Mensagem.find({ destinatario: 'Geral' }).sort({ dataEnvio: 1 }).limit(50);
             socket.emit('historico_mensagens', historico);
-        } catch (err) { console.error(err); }
+        } catch (err) { console.error('Erro geral:', err); }
     });
 
-    // BUSCAR HISTÓRICO PRIVADO (1 A 1)
-    socket.on('pedir_historico_privado', async (contato) => {
-        const meuNome = usuariosOnline.get(socket.id);
-        if(!meuNome) return;
+    // BUSCAR HISTÓRICO PRIVADO (1 A 1) CORRIGIDO
+    socket.on('pedir_historico_privado', async (dados) => {
         try {
             const historico = await Mensagem.find({
                 $or: [
-                    { nome: meuNome, destinatario: contato },
-                    { nome: contato, destinatario: meuNome }
+                    { nome: dados.meuNome, destinatario: dados.contato },
+                    { nome: dados.contato, destinatario: dados.meuNome }
                 ]
             }).sort({ dataEnvio: 1 }).limit(50);
-            socket.emit('historico_privado_resposta', { contato, historico });
-        } catch(err) { console.error(err); }
+            
+            socket.emit('historico_privado_resposta', { contato: dados.contato, historico });
+        } catch(err) { console.error('Erro privado:', err); }
     });
 
     // RECEBER E SALVAR MENSAGEM DO GRUPO
@@ -78,7 +72,7 @@ io.on('connection', async (socket) => {
                 hora: dados.hora
             });
             await novaMensagem.save();
-            io.emit('receber_mensagem', dados); // Envia para todos
+            io.emit('receber_mensagem', dados); 
         } catch (err) { console.error(err); }
     });
 

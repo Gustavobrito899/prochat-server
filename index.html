@@ -283,8 +283,15 @@
     <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
     <script>
         const socket = io('https://prochat-server-6bra.onrender.com');
-        let userName = "Gustavo";
+        let userName = "";
         let currentContact = "Geral";
+
+        // Previne perder a conexão se o Render reiniciar a máquina
+        socket.on('connect', () => {
+            if (userName !== "") {
+                socket.emit('registrar_usuario', userName);
+            }
+        });
 
         // --- RENDERIZAR MENSAGENS NA TELA ---
         function renderizarMensagemSingle(dados) {
@@ -337,7 +344,6 @@
         socket.on('lista_usuarios', (usuarios) => {
             const container = document.getElementById('contact-list-container');
             
-            // Sempre mantém o Grupo Geral no topo
             let html = `
                 <div class="contact-item ${currentContact === 'Geral' ? 'active' : ''}" onclick="ChatFlow.switchContact('Geral')">
                     <div class="avatar-container">
@@ -352,9 +358,8 @@
                     </div>
                 </div>`;
 
-            // Adiciona as pessoas que estão online
             usuarios.forEach(user => {
-                if(user !== userName) { // Não mostra você mesmo na lista
+                if(user !== userName) { 
                     const primeiraLetra = user.charAt(0).toUpperCase();
                     html += `
                         <div class="contact-item ${currentContact === user ? 'active' : ''}" onclick="ChatFlow.switchContact('${user}')">
@@ -403,7 +408,6 @@
                 document.getElementById('auth-container').classList.add('hidden');
                 document.getElementById('main-app').classList.remove('hidden');
                 
-                // NOVO: Avisa o servidor quem você é!
                 socket.emit('registrar_usuario', userName);
                 socket.emit('pedir_historico_geral');
             }
@@ -425,7 +429,6 @@
                 if(currentContact === 'Geral') {
                     socket.emit('enviar_mensagem', dados);
                 } else {
-                    // Prepara pacote para mensagem privada
                     dados.de = userName;
                     dados.para = currentContact;
                     socket.emit('enviar_mensagem_privada', dados);
@@ -436,6 +439,9 @@
             switchContact: (name) => {
                 currentContact = name;
                 document.getElementById('current-chat-name').innerText = name;
+                
+                // Limpa a tela na hora para não misturar os chats
+                document.getElementById('chat-messages-container').innerHTML = '<div class="encryption-notice">Carregando...</div>';
                 
                 const avatarEle = document.getElementById('current-chat-avatar');
                 if(name === 'Geral') {
@@ -448,10 +454,10 @@
                     avatarEle.style.backgroundImage = "none";
                     avatarEle.innerText = name.charAt(0).toUpperCase();
                     avatarEle.style.color = "#fff";
-                    socket.emit('pedir_historico_privado', name);
+                    // Agora manda seu nome junto para o servidor não esquecer quem está pedindo
+                    socket.emit('pedir_historico_privado', { meuNome: userName, contato: name });
                 }
 
-                // Efeito visual na lista
                 document.querySelectorAll('.contact-item').forEach(el => el.classList.remove('active'));
                 
                 if(window.innerWidth <= 768) document.getElementById('main-app').classList.add('show-chat');
