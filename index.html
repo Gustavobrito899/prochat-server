@@ -22,11 +22,8 @@
             --hover: #F9FAFB;
             --sombra-leve: 0 1px 3px rgba(0,0,0,0.05);
             --sombra-densa: 0 10px 25px rgba(0,0,0,0.05);
-            --sombra-botao: 0 2px 4px rgba(37, 99, 235, 0.2);
             --status-online: #10B981; 
-            --perigo: #EF4444; 
             --tamanho-fonte-chat: 15px; 
-            --cor-check-leitura: #3B82F6; 
         }
 
         [data-theme="dark"] {
@@ -34,206 +31,104 @@
             --superficie: #1F2937;
             --superficie-solid: #1F2937;
             --cor-primaria: #3B82F6;
-            --gradiente-primario: #3B82F6;
-            --cor-texto-botao: #FFFFFF;
             --texto-principal: #F9FAFB;
             --texto-secundario: #9CA3AF;
             --msg-recebida: #374151;
             --msg-enviada: #3B82F6;
             --borda: #374151;
             --hover: #283548;
-            --sombra-leve: 0 1px 3px rgba(0,0,0,0.2);
-            --sombra-densa: 0 10px 25px rgba(0,0,0,0.3);
-            --sombra-botao: 0 2px 4px rgba(59, 130, 246, 0.2);
-            --status-online: #10B981;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: background-color 0.2s, color 0.2s, border-color 0.2s; }
         body { background: var(--bg-wallpaper); color: var(--texto-principal); display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
         .hidden { display: none !important; }
-        .fade-out { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .fade-in { animation: fadeIn 0.3s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
         .btn-primary { width: 100%; padding: 12px; background: var(--cor-primaria); color: var(--cor-texto-botao); border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; transition: opacity 0.2s; }
-        .btn-primary:hover { opacity: 0.9; }
         .icon-btn { cursor: pointer; color: var(--texto-secundario); background: transparent; border: none; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 8px; font-size: 20px; transition: all 0.2s; position: relative; z-index: 15;}
-        .icon-btn:hover { background: var(--hover); color: var(--texto-principal); }
-
-        /* LOADING & LOGIN */
+        
         #loading-screen { position: fixed; inset: 0; background: var(--superficie); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; color: var(--cor-primaria); }
         .spinner { width: 32px; height: 32px; border: 3px solid var(--borda); border-top: 3px solid var(--cor-primaria); border-radius: 50%; animation: spin 0.8s infinite linear; margin-bottom: 16px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        #auth-container { width: 100%; max-width: 380px; background: var(--superficie); padding: 40px 32px; border-radius: 12px; box-shadow: var(--sombra-densa); border: 1px solid var(--borda); text-align: center; margin: 20px; z-index: 50; position: relative; }
-        .auth-logo { font-size: 24px; font-weight: 600; color: var(--texto-principal); margin-bottom: 6px; letter-spacing: -0.5px;}
-        .auth-subtitle { color: var(--texto-secundario); font-size: 14px; margin-bottom: 32px; }
-        .input-group { margin-bottom: 24px; text-align: left; }
-        .input-group label { display: block; font-size: 12px; font-weight: 500; margin-bottom: 8px; color: var(--texto-secundario); }
-        .input-group input { width: 100%; padding: 12px 16px; border: 1px solid var(--borda); border-radius: 8px; background: var(--bg-wallpaper); color: var(--texto-principal); outline: none; font-size: 15px; transition: border-color 0.2s;}
-        .input-group input:focus { border-color: var(--cor-primaria); background: var(--superficie); }
-        .otp-inputs { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 24px; }
-        .otp-inputs input { width: 44px; height: 52px; font-size: 20px; font-weight: 500; text-align: center; border: 1px solid var(--borda); border-radius: 8px; background: var(--bg-wallpaper); color: var(--texto-principal); outline: none; transition: border-color 0.2s;}
-        .otp-inputs input:focus { border-color: var(--cor-primaria); background: var(--superficie);}
-        .text-link { font-size: 13px; color: var(--cor-primaria); cursor: pointer; font-weight: 500; margin-top: 16px; display: inline-block;}
-        .text-link:hover { text-decoration: underline; }
-
-        /* APP PRINCIPAL */
-        #main-app { display: flex; width: 100%; max-width: 1200px; height: 90vh; background: var(--superficie); border-radius: 12px; box-shadow: var(--sombra-densa); border: 1px solid var(--borda); margin: auto; overflow: hidden; }
+        #auth-container { width: 100%; max-width: 380px; background: var(--superficie); padding: 40px 32px; border-radius: 12px; box-shadow: var(--sombra-densa); border: 1px solid var(--borda); text-align: center; margin: 20px; }
+        .input-group input { width: 100%; padding: 12px 16px; border: 1px solid var(--borda); border-radius: 8px; background: var(--bg-wallpaper); color: var(--texto-principal); outline: none; margin-bottom: 24px;}
+        
+        #main-app { display: flex; width: 100%; max-width: 1200px; height: 90vh; background: var(--superficie); border-radius: 12px; box-shadow: var(--sombra-densa); border: 1px solid var(--borda); overflow: hidden; }
         
         .sidebar { width: 340px; border-right: 1px solid var(--borda); display: flex; flex-direction: column; background: var(--superficie); z-index: 10; }
         .sidebar-header { padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid transparent;}
-        .user-profile { display: flex; align-items: center; gap: 12px; font-weight: 500; cursor: pointer; padding: 6px; border-radius: 8px;}
-        .user-profile:hover { background: var(--hover); }
         .avatar { width: 36px; height: 36px; background: var(--cor-primaria); color: var(--cor-texto-botao); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: 500; flex-shrink: 0; font-size: 14px; object-fit: cover; background-size: cover; background-position: center; }
-        .header-title { font-size: 20px; font-weight: 600; padding: 4px 20px 16px 20px; color: var(--texto-principal); letter-spacing: -0.5px;}
-
-        .stories-bar { display: flex; overflow-x: auto; gap: 16px; padding: 0 20px 20px 20px; scrollbar-width: none; }
-        .stories-bar::-webkit-scrollbar { display: none; }
-        .story-item { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; flex-shrink: 0; }
-        .story-avatar-wrap { width: 54px; height: 54px; border-radius: 50%; padding: 2px; border: 2px solid var(--cor-primaria); display: flex; justify-content: center; align-items: center; }
-        .story-avatar-wrap.add-new { border: 1px dashed var(--borda); background: var(--bg-wallpaper); }
-        .story-avatar { width: 100%; height: 100%; background-color: var(--bg-wallpaper); border-radius: 50%; background-size: cover; background-position: center;}
-        .story-avatar.add-btn { display: flex; justify-content: center; align-items: center; background: transparent; font-size: 24px; color: var(--texto-secundario); font-weight: 300;}
-        .story-name { font-size: 12px; font-weight: 400; color: var(--texto-secundario); }
-
-        .search-bar { padding: 0 20px 16px 20px; }
-        .search-bar input { width: 100%; padding: 10px 16px 10px 36px; border: 1px solid var(--borda); border-radius: 6px; outline: none; background: var(--bg-wallpaper); color: var(--texto-principal); font-size: 14px; }
-        .search-bar input:focus { border-color: var(--cor-primaria); background: var(--superficie); }
         
         .contact-list { flex-grow: 1; overflow-y: auto; }
         .contact-item { padding: 12px 20px; display: flex; gap: 14px; cursor: pointer; align-items: center; position: relative; border-bottom: 1px solid var(--bg-wallpaper); transition: background 0.2s;}
-        .contact-item:hover { background: var(--hover); }
-        .contact-item.active { background: var(--hover); }
-        .contact-item.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--cor-primaria); border-radius: 0 4px 4px 0;}
-        .avatar-container { position: relative; pointer-events: none; } 
-        .note-bubble { position: absolute; top: -6px; left: 24px; background: var(--superficie); border: 1px solid var(--borda); padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 500; white-space: nowrap; box-shadow: var(--sombra-leve); color: var(--texto-secundario); z-index: 2;}
+        .contact-item:hover, .contact-item.active { background: var(--hover); }
         .contact-name { font-weight: 500; font-size: 15px; color: var(--texto-principal);}
         .contact-msg { font-size: 13px; color: var(--texto-secundario); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 4px; }
 
-        /* CHAT AREA */
         .chat-area { flex-grow: 1; display: flex; flex-direction: column; background: var(--bg-wallpaper); position: relative; }
-        .chat-header { padding: 14px 24px; background: var(--superficie); border-bottom: 1px solid var(--borda); display: flex; justify-content: space-between; align-items: center; z-index: 10;}
+        .chat-header { padding: 14px 24px; background: var(--superficie); border-bottom: 1px solid var(--borda); display: flex; align-items: center; z-index: 10;}
         .chat-messages { flex-grow: 1; padding: 24px 8%; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;}
         .encryption-notice { align-self: center; background: transparent; padding: 6px 12px; font-size: 12px; color: var(--texto-secundario); margin-bottom: 16px; font-weight: 400;}
-        .message { max-width: 65%; padding: 10px 14px; font-size: var(--tamanho-fonte-chat); line-height: 1.5; position: relative; word-wrap: break-word; border-radius: 12px; box-shadow: var(--sombra-leve);}
+        
+        .message { max-width: 65%; padding: 10px 14px; font-size: var(--tamanho-fonte-chat); line-height: 1.5; border-radius: 12px; box-shadow: var(--sombra-leve); word-wrap: break-word;}
         .message.received { background: var(--superficie); align-self: flex-start; color: var(--texto-principal); border: 1px solid var(--borda); border-bottom-left-radius: 4px; }
-        .message.sent { background: var(--msg-enviada); color: var(--cor-texto-botao); align-self: flex-end; display: flex; flex-direction: column; border-bottom-right-radius: 4px; border: 1px solid transparent;}
-        .message-footer { display: flex; justify-content: flex-end; align-items: center; gap: 6px; margin-top: 4px; opacity: 0.8;}
-        .message-time { font-size: 11px;}
+        .message.sent { background: var(--msg-enviada); color: var(--cor-texto-botao); align-self: flex-end; border-bottom-right-radius: 4px; border: 1px solid transparent;}
+        .message-footer { display: flex; justify-content: flex-end; align-items: center; gap: 6px; margin-top: 4px; font-size: 11px; opacity: 0.8;}
 
-        /* INPUT AREA */
-        .chat-input-area { padding: 16px 24px; display: flex; align-items: center; gap: 12px; background: var(--superficie); border-top: 1px solid var(--borda); z-index: 10;}
-        .input-wrapper { flex-grow: 1; display: flex; align-items: center; background: var(--bg-wallpaper); border-radius: 8px; padding: 8px 16px; border: 1px solid var(--borda); transition: border-color 0.2s;}
-        .input-wrapper:focus-within { border-color: var(--cor-primaria); background: var(--superficie); }
-        .input-wrapper input { flex-grow: 1; padding: 4px 0; border: none; outline: none; background: transparent; color: var(--texto-principal); font-size: 15px; }
-        .send-btn { background: var(--cor-primaria); color: var(--cor-texto-botao); border: none; border-radius: 8px; width: 40px; height: 40px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 18px; flex-shrink: 0; transition: opacity 0.2s;}
-        .send-btn:hover { opacity: 0.9; }
+        .chat-input-area { padding: 16px 24px; display: flex; align-items: center; gap: 12px; background: var(--superficie); border-top: 1px solid var(--borda);}
+        .input-wrapper { flex-grow: 1; display: flex; align-items: center; background: var(--bg-wallpaper); border-radius: 8px; padding: 8px 16px; border: 1px solid var(--borda);}
+        .input-wrapper input { width: 100%; padding: 4px 0; border: none; outline: none; background: transparent; color: var(--texto-principal); font-size: 15px; }
+        .send-btn { background: var(--cor-primaria); color: var(--cor-texto-botao); border: none; border-radius: 8px; width: 40px; height: 40px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 18px; }
 
-        /* MODAIS */
-        .modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: flex; justify-content: center; align-items: center; z-index: 100; opacity: 0; pointer-events: none; transition: 0.2s;}
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-content { background: var(--superficie); width: 100%; max-width: 500px; max-height: 85vh; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; transform: scale(0.95); opacity: 0; transition: all 0.3s ease; margin: auto; box-shadow: var(--sombra-densa); border: 1px solid var(--borda);}
-        .modal-overlay.active .modal-content { transform: scale(1); opacity: 1; }
+        /* AJUSTES PARA CELULAR */
+        .back-btn-mobile { display: none; background: transparent; border: none; color: var(--texto-secundario); font-size: 24px; padding-right: 12px; cursor: pointer; }
         
         @media (max-width: 768px) {
             #main-app { border-radius: 0; height: 100vh; border: none; }
             .sidebar { width: 100%; border-right: none; }
             .chat-area { display: none; width: 100%; }
-            #main-app.show-chat .sidebar { display: none; }
-            #main-app.show-chat .chat-area { display: flex; }
-            .modal-content { height: 95vh; border-radius: 12px 12px 0 0; border-bottom: none; transform: translateY(100%); }
-            .modal-overlay.active .modal-content { transform: translateY(0); align-self: flex-end;}
+            #main-app.show-chat .sidebar { display: none !important; }
+            #main-app.show-chat .chat-area { display: flex !important; }
+            .back-btn-mobile { display: block; }
+            .message { max-width: 85%; }
+            .chat-messages { padding: 20px 4%; }
+            .chat-input-area { padding: 12px; }
         }
-        
-        .modal-header-ios { padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--borda); font-weight: 600; font-size: 16px;}
-        .close-modal-text { color: var(--texto-secundario); cursor: pointer; font-size: 14px; font-weight: 500; padding: 6px 10px; border-radius: 6px; }
-        .modal-tabs-ios { display: flex; padding: 12px 24px; background: var(--bg-wallpaper); gap: 8px; border-bottom: 1px solid var(--borda); overflow-x: auto;}
-        .modal-tab { flex: 1; padding: 8px 12px; text-align: center; font-size: 13px; font-weight: 500; color: var(--texto-secundario); background: transparent; border-radius: 6px; cursor: pointer; transition: all 0.2s; white-space: nowrap;}
-        .modal-tab.active { background: var(--superficie); color: var(--cor-primaria); box-shadow: var(--sombra-leve); font-weight: 600;}
-        .modal-body { flex-grow: 1; padding: 0 24px 32px 24px; overflow-y: auto; background: var(--superficie);}
-        .settings-section { display: none; }
-        .settings-section.active { display: block; animation: fadeIn 0.3s; }
-        .ios-list { background: var(--superficie); border-radius: 8px; overflow: hidden; margin-bottom: 24px; border: 1px solid var(--borda); }
-        .setting-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--borda); }
-        .profile-input-ios { width: 100%; padding: 16px; border: none; background: transparent; color: var(--texto-principal); font-size: 15px; outline: none; border-bottom: 1px solid var(--borda); }
-        .switch { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0;}
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; inset: 0; background-color: var(--borda); border-radius: 24px; transition: .2s; }
-        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 2px; bottom: 2px; background-color: white; border-radius: 50%; transition: .2s;}
-        input:checked + .slider { background: var(--cor-primaria); }
-        input:checked + .slider:before { transform: translateX(20px); }
     </style>
 </head>
 <body>
 
     <div id="loading-screen"><div class="spinner"></div><h2 style="font-weight: 500;">ProChat</h2></div>
 
-    <input type="file" id="image-upload-input" accept="image/*" class="hidden">
-    <input type="file" id="status-upload-input" accept="image/*" class="hidden">
-
     <div id="auth-container" class="hidden">
-        <div id="login-step">
-            <div class="auth-logo">Entrar no ProChat</div>
-            <p class="auth-subtitle">Confirme seu nome para continuar.</p>
-            <div class="input-group">
-                <input type="text" id="user-contact" placeholder="Seu nome">
-            </div>
-            <button class="btn-primary" onclick="AuthFlow.requestOTP()">Avançar</button>
+        <div class="auth-logo">Entrar no ProChat</div>
+        <p style="color: var(--texto-secundario); margin-bottom: 24px; font-size: 14px;">Confirme seu nome para continuar.</p>
+        <div class="input-group">
+            <input type="text" id="user-contact" placeholder="Seu nome">
         </div>
-
-        <div id="otp-step" class="hidden">
-            <div class="auth-logo">Código de Acesso</div>
-            <p class="auth-subtitle" id="otp-message">Enviamos um código para você.</p>
-            <div class="otp-inputs">
-                <input type="text" maxlength="1" oninput="AuthFlow.moveToNext(this, 0)" onkeydown="AuthFlow.moveToPrev(event, this, 0)">
-                <input type="text" maxlength="1" oninput="AuthFlow.moveToNext(this, 1)" onkeydown="AuthFlow.moveToPrev(event, this, 1)" disabled>
-                <input type="text" maxlength="1" oninput="AuthFlow.moveToNext(this, 2)" onkeydown="AuthFlow.moveToPrev(event, this, 2)" disabled>
-                <input type="text" maxlength="1" oninput="AuthFlow.moveToNext(this, 3)" onkeydown="AuthFlow.moveToPrev(event, this, 3)" disabled>
-                <input type="text" maxlength="1" oninput="AuthFlow.moveToNext(this, 4)" onkeydown="AuthFlow.moveToPrev(event, this, 4)" disabled>
-                <input type="text" maxlength="1" oninput="AuthFlow.verifyOTP()" onkeydown="AuthFlow.moveToPrev(event, this, 5)" disabled>
-            </div>
-            <button class="btn-primary" onclick="AuthFlow.verifyOTP()">Entrar</button>
-            <div style="display: flex; justify-content: space-between;">
-                <span class="text-link" onclick="AuthFlow.goBack()">Voltar</span>
-                <span class="text-link" style="color: var(--texto-secundario);">Reenviar código</span>
-            </div>
-        </div>
+        <button class="btn-primary" onclick="AuthFlow.verifyOTP()">Entrar</button>
     </div>
 
     <div id="main-app" class="hidden">
         <aside class="sidebar">
             <header class="sidebar-header">
-                <div class="user-profile" onclick="event.stopPropagation(); ModalFlow.open('tab-profile')">
+                <div style="display: flex; align-items: center; gap: 12px; font-weight: 500;">
                     <div class="avatar" id="sidebar-avatar-letter">G</div>
                     <span id="sidebar-user-name">Gustavo</span>
                 </div>
-                <button class="icon-btn" onclick="event.stopPropagation(); ModalFlow.open('tab-appearance')" title="Configurações">
-                    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                </button>
             </header>
             
-            <div class="header-title">Conversas</div>
-
-            <div class="stories-bar" id="stories-bar-container">
-                <div class="story-item" onclick="document.getElementById('status-upload-input').click()">
-                    <div class="story-avatar-wrap add-new"><div class="story-avatar add-btn">+</div></div>
-                    <span class="story-name">Adicionar</span>
-                </div>
-            </div>
-
-            <div class="search-bar">
-                <input type="text" id="contact-search" placeholder="Pesquisar contatos...">
-            </div>
-
-            <div class="contact-list" id="contact-list-container">
-                </div>
+            <div style="font-size: 20px; font-weight: 600; padding: 16px 20px;">Conversas</div>
+            
+            <div class="contact-list" id="contact-list-container"></div>
         </aside>
 
         <main class="chat-area">
             <header class="chat-header">
                 <div style="display: flex; align-items: center;">
-                    <button class="icon-btn back-btn-mobile" style="display: none;" onclick="MobileFlow.closeChat()">←</button>
+                    <button class="back-btn-mobile" onclick="MobileFlow.closeChat()">←</button>
                     <div class="avatar" id="current-chat-avatar" style="background-image: url('https://cdn-icons-png.flaticon.com/512/2352/2352167.png'); width: 40px; height: 40px; margin-right: 12px; font-size: 18px; color: transparent;">G</div>
                     <div>
                         <h3 style="font-size: 16px; font-weight: 600;" id="current-chat-name">Grupo Geral</h3>
@@ -245,7 +140,6 @@
             <div class="chat-messages" id="chat-messages-container"></div>
 
             <div class="chat-input-area">
-                <button class="icon-btn" onclick="document.getElementById('image-upload-input').click()">+</button>
                 <div class="input-wrapper">
                     <input type="text" id="message-input" placeholder="Escreva uma mensagem...">
                 </div>
@@ -254,46 +148,16 @@
         </main>
     </div>
 
-    <div class="modal-overlay" id="settings-modal" onclick="ModalFlow.closeOutside(event)">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <div class="modal-header-ios">
-                <span>Configurações</span>
-                <span class="close-modal-text" onclick="ModalFlow.close()">Fechar</span>
-            </div>
-            <div class="modal-tabs-ios">
-                <div class="modal-tab active" data-target="tab-profile" onclick="ModalFlow.switchTab('tab-profile')">Perfil</div>
-                <div class="modal-tab" data-target="tab-appearance" onclick="ModalFlow.switchTab('tab-appearance')">Aparência</div>
-            </div>
-            <div class="modal-body">
-                <div class="settings-section active" id="tab-profile">
-                    <div class="ios-list" style="margin-top: 20px;">
-                        <input type="text" id="input-profile-name" class="profile-input-ios" value="Gustavo">
-                    </div>
-                </div>
-                <div class="settings-section" id="tab-appearance">
-                    <div class="setting-item">
-                        <span>Modo Escuro</span>
-                        <label class="switch"><input type="checkbox" id="theme-toggle"><span class="slider"></span></label>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
     <script>
         const socket = io('https://prochat-server-6bra.onrender.com');
         let userName = "";
         let currentContact = "Geral";
 
-        // Previne perder a conexão se o Render reiniciar a máquina
         socket.on('connect', () => {
-            if (userName !== "") {
-                socket.emit('registrar_usuario', userName);
-            }
+            if (userName !== "") socket.emit('registrar_usuario', userName);
         });
 
-        // --- RENDERIZAR MENSAGENS NA TELA ---
         function renderizarMensagemSingle(dados) {
             const container = document.getElementById('chat-messages-container');
             const isMe = dados.nome === userName;
@@ -302,19 +166,16 @@
             msgDiv.innerHTML = `
                 <div style="font-size: 11px; font-weight: 600; margin-bottom: 4px; opacity: 0.8;">${dados.nome}</div>
                 ${dados.texto}
-                <div class="message-footer">
-                    <span class="message-time">${dados.hora || ''}</span>
-                </div>
+                <div class="message-footer"><span class="message-time">${dados.hora || ''}</span></div>
             `;
             container.appendChild(msgDiv);
             container.scrollTop = container.scrollHeight;
         }
 
-        // --- EVENTOS DO BACKEND ---
         socket.on('historico_mensagens', (historico) => {
             const container = document.getElementById('chat-messages-container');
-            container.innerHTML = '<div class="encryption-notice">Mensagens do Grupo Geral.</div>';
-            historico.forEach(renderizarMensagemSingle);
+            container.innerHTML = '<div class="encryption-notice">Bem-vindo ao Grupo Geral!</div>';
+            if(historico && historico.length > 0) historico.forEach(renderizarMensagemSingle);
         });
 
         socket.on('receber_mensagem', (dados) => {
@@ -323,37 +184,29 @@
             if(preview) preview.innerText = `${dados.nome}: ${dados.texto}`;
         });
 
-        // Eventos Privados
         socket.on('historico_privado_resposta', (dados) => {
             if (currentContact === dados.contato) {
                 const container = document.getElementById('chat-messages-container');
-                container.innerHTML = `<div class="encryption-notice">Chat privado com ${dados.contato}</div>`;
-                dados.historico.forEach(renderizarMensagemSingle);
+                container.innerHTML = `<div class="encryption-notice">Chat com ${dados.contato}. As mensagens são seguras.</div>`;
+                if(dados.historico && dados.historico.length > 0) {
+                    dados.historico.forEach(renderizarMensagemSingle);
+                }
             }
         });
 
         socket.on('receber_mensagem_privada', (dados) => {
-            if (currentContact === dados.contatoOriginal) {
-                renderizarMensagemSingle(dados);
-            }
+            if (currentContact === dados.contatoOriginal) renderizarMensagemSingle(dados);
             const preview = document.getElementById(`preview-${dados.contatoOriginal}`);
             if(preview) preview.innerText = `${dados.texto}`;
         });
 
-        // ATUALIZAR LISTA LATERAL DE USUÁRIOS
         socket.on('lista_usuarios', (usuarios) => {
             const container = document.getElementById('contact-list-container');
-            
             let html = `
                 <div class="contact-item ${currentContact === 'Geral' ? 'active' : ''}" onclick="ChatFlow.switchContact('Geral')">
-                    <div class="avatar-container">
-                        <div class="avatar" style="background-image: url('https://cdn-icons-png.flaticon.com/512/2352/2352167.png'); color: transparent;">G</div>
-                        <div class="note-bubble">PROCHAT</div>
-                    </div>
-                    <div style="flex-grow: 1; overflow: hidden;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div class="contact-name">Grupo Geral</div>
-                        </div>
+                    <div class="avatar" style="background-image: url('https://cdn-icons-png.flaticon.com/512/2352/2352167.png'); color: transparent;">G</div>
+                    <div style="flex-grow: 1; overflow: hidden; padding-left: 14px;">
+                        <div class="contact-name">Grupo Geral</div>
                         <div class="contact-msg" id="preview-Geral">Chat público</div>
                     </div>
                 </div>`;
@@ -363,13 +216,11 @@
                     const primeiraLetra = user.charAt(0).toUpperCase();
                     html += `
                         <div class="contact-item ${currentContact === user ? 'active' : ''}" onclick="ChatFlow.switchContact('${user}')">
-                            <div class="avatar-container">
-                                <div class="avatar" style="background: var(--cor-secundaria);">${primeiraLetra}</div>
-                            </div>
-                            <div style="flex-grow: 1; overflow: hidden;">
+                            <div class="avatar" style="background: var(--cor-primaria); color: white;">${primeiraLetra}</div>
+                            <div style="flex-grow: 1; overflow: hidden; padding-left: 14px;">
                                 <div style="display: flex; justify-content: space-between; align-items: center;">
                                     <div class="contact-name">${user}</div>
-                                    <span style="font-size: 12px; color: var(--status-online);">Online</span>
+                                    <span style="font-size: 11px; color: var(--status-online); font-weight: 500;">Online</span>
                                 </div>
                                 <div class="contact-msg" id="preview-${user}">Toque para conversar</div>
                             </div>
@@ -379,32 +230,13 @@
             container.innerHTML = html;
         });
 
-        // --- AUTH FLOW ---
         const AuthFlow = {
-            requestOTP: () => {
-                const contact = document.getElementById('user-contact').value.trim();
-                if(contact.length < 3) return alert('Insira um nome válido.');
-                userName = contact;
+            verifyOTP: () => {
+                const nameInput = document.getElementById('user-contact').value.trim();
+                if(nameInput.length < 2) return alert('Insira um nome válido.');
+                userName = nameInput;
                 document.getElementById('sidebar-user-name').innerText = userName;
                 document.getElementById('sidebar-avatar-letter').innerText = userName.charAt(0).toUpperCase();
-                document.getElementById('login-step').classList.add('hidden');
-                document.getElementById('otp-step').classList.remove('hidden');
-            },
-            goBack: () => {
-                document.getElementById('otp-step').classList.add('hidden');
-                document.getElementById('login-step').classList.remove('hidden');
-            },
-            moveToNext: (input, index) => {
-                const inputs = document.querySelectorAll('.otp-inputs input');
-                if(input.value.length === 1 && index < inputs.length - 1) { 
-                    inputs[index + 1].disabled = false; inputs[index + 1].focus(); 
-                }
-            },
-            moveToPrev: (event, input, index) => {
-                const inputs = document.querySelectorAll('.otp-inputs input');
-                if(event.key === 'Backspace' && input.value === '' && index > 0) inputs[index - 1].focus();
-            },
-            verifyOTP: () => {
                 document.getElementById('auth-container').classList.add('hidden');
                 document.getElementById('main-app').classList.remove('hidden');
                 
@@ -413,34 +245,25 @@
             }
         };
 
-        // --- CHAT FLOW ---
         const ChatFlow = {
             sendText: () => {
                 const input = document.getElementById('message-input');
                 const text = input.value.trim();
                 if(!text) return;
 
-                const dados = {
-                    nome: userName,
-                    texto: text,
-                    hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                };
+                const dados = { nome: userName, texto: text, hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
 
                 if(currentContact === 'Geral') {
                     socket.emit('enviar_mensagem', dados);
                 } else {
-                    dados.de = userName;
-                    dados.para = currentContact;
+                    dados.de = userName; dados.para = currentContact;
                     socket.emit('enviar_mensagem_privada', dados);
                 }
-                
                 input.value = '';
             },
             switchContact: (name) => {
                 currentContact = name;
                 document.getElementById('current-chat-name').innerText = name;
-                
-                // Limpa a tela na hora para não misturar os chats
                 document.getElementById('chat-messages-container').innerHTML = '<div class="encryption-notice">Carregando...</div>';
                 
                 const avatarEle = document.getElementById('current-chat-avatar');
@@ -454,40 +277,18 @@
                     avatarEle.style.backgroundImage = "none";
                     avatarEle.innerText = name.charAt(0).toUpperCase();
                     avatarEle.style.color = "#fff";
-                    // Agora manda seu nome junto para o servidor não esquecer quem está pedindo
                     socket.emit('pedir_historico_privado', { meuNome: userName, contato: name });
                 }
 
                 document.querySelectorAll('.contact-item').forEach(el => el.classList.remove('active'));
-                
                 if(window.innerWidth <= 768) document.getElementById('main-app').classList.add('show-chat');
             }
-        };
-
-        const ModalFlow = {
-            open: (tabId) => {
-                document.getElementById('settings-modal').classList.add('active');
-                ModalFlow.switchTab(tabId);
-            },
-            switchTab: (tabId) => {
-                document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.settings-section').forEach(s => s.classList.remove('active'));
-                const targetTab = document.querySelector(`[data-target="${tabId}"]`);
-                if(targetTab) targetTab.classList.add('active');
-                const targetSec = document.getElementById(tabId);
-                if(targetSec) targetSec.classList.add('active');
-            },
-            close: () => document.getElementById('settings-modal').classList.remove('active'),
-            closeOutside: (e) => { if(e.target.id === 'settings-modal') ModalFlow.close(); }
         };
 
         const MobileFlow = { closeChat: () => document.getElementById('main-app').classList.remove('show-chat') };
 
         document.getElementById('send-btn').addEventListener('click', ChatFlow.sendText);
         document.getElementById('message-input').addEventListener('keypress', e => { if (e.key === 'Enter') ChatFlow.sendText(); });
-        document.getElementById('theme-toggle').addEventListener('change', (e) => { 
-            e.target.checked ? document.documentElement.setAttribute('data-theme', 'dark') : document.documentElement.removeAttribute('data-theme'); 
-        });
 
         window.onload = () => {
             setTimeout(() => {

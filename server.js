@@ -28,29 +28,27 @@ const io = new Server(server, {
     cors: { origin: "*", methods: ["GET", "POST"] }
 });
 
-// MAPA PARA RASTREAR QUEM ESTÁ ONLINE (ID do Socket -> Nome)
 const usuariosOnline = new Map();
 
 io.on('connection', (socket) => {
     console.log('🟢 Usuário conectado! ID:', socket.id);
 
-    // REGISTRAR USUÁRIO NOVO E AVISAR TODOS
     socket.on('registrar_usuario', (nome) => {
         usuariosOnline.set(socket.id, nome);
         io.emit('lista_usuarios', Array.from(usuariosOnline.values())); 
     });
 
-    // BUSCAR HISTÓRICO DO GRUPO GERAL
     socket.on('pedir_historico_geral', async () => {
         try {
             const historico = await Mensagem.find({ destinatario: 'Geral' }).sort({ dataEnvio: 1 }).limit(50);
-            socket.emit('historico_mensagens', historico);
+            socket.emit('historico_mensagens', historico || []);
         } catch (err) { console.error('Erro geral:', err); }
     });
 
-    // BUSCAR HISTÓRICO PRIVADO (1 A 1) CORRIGIDO
     socket.on('pedir_historico_privado', async (dados) => {
         try {
+            if (!dados.meuNome || !dados.contato) return;
+            
             const historico = await Mensagem.find({
                 $or: [
                     { nome: dados.meuNome, destinatario: dados.contato },
@@ -58,11 +56,14 @@ io.on('connection', (socket) => {
                 ]
             }).sort({ dataEnvio: 1 }).limit(50);
             
-            socket.emit('historico_privado_resposta', { contato: dados.contato, historico });
-        } catch(err) { console.error('Erro privado:', err); }
+            // Garante que vai devolver uma resposta, mesmo que seja array vazio []
+            socket.emit('historico_privado_resposta', { contato: dados.contato, historico: historico || [] });
+        } catch(err) { 
+            console.error('Erro privado:', err); 
+            socket.emit('historico_privado_resposta', { contato: dados.contato, historico: [] });
+        }
     });
 
-    // RECEBER E SALVAR MENSAGEM DO GRUPO
     socket.on('enviar_mensagem', async (dados) => {
         try {
             const novaMensagem = new Mensagem({
@@ -76,7 +77,6 @@ io.on('connection', (socket) => {
         } catch (err) { console.error(err); }
     });
 
-    // RECEBER E SALVAR MENSAGEM PRIVADA
     socket.on('enviar_mensagem_privada', async (dados) => {
         try {
             const novaMensagem = new Mensagem({
@@ -87,7 +87,6 @@ io.on('connection', (socket) => {
             });
             await novaMensagem.save();
 
-            // Procura o ID de quem vai receber
             let socketDestinatario = null;
             for (let [id, nome] of usuariosOnline.entries()) {
                 if (nome === dados.para) {
@@ -96,17 +95,14 @@ io.on('connection', (socket) => {
                 }
             }
 
-            // Entrega a mensagem para a pessoa (se online)
             if (socketDestinatario) {
                 io.to(socketDestinatario).emit('receber_mensagem_privada', { nome: dados.de, texto: dados.texto, hora: dados.hora, contatoOriginal: dados.de });
             }
-            // Retorna para quem enviou ver na tela
             socket.emit('receber_mensagem_privada', { nome: dados.de, texto: dados.texto, hora: dados.hora, contatoOriginal: dados.para });
 
         } catch (err) { console.error('Erro msg privada:', err); }
     });
 
-    // DESCONECTAR E ATUALIZAR LISTA
     socket.on('disconnect', () => {
         const nome = usuariosOnline.get(socket.id);
         usuariosOnline.delete(socket.id);
