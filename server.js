@@ -49,14 +49,14 @@ io.on('connection', (socket) => {
         try {
             if (!dados.meuNome || !dados.contato) return;
             
+            // Busca Inteligente: Ignora se a letra é maiúscula ou minúscula
             const historico = await Mensagem.find({
                 $or: [
-                    { nome: dados.meuNome, destinatario: dados.contato },
-                    { nome: dados.contato, destinatario: dados.meuNome }
+                    { nome: new RegExp(`^${dados.meuNome}$`, 'i'), destinatario: new RegExp(`^${dados.contato}$`, 'i') },
+                    { nome: new RegExp(`^${dados.contato}$`, 'i'), destinatario: new RegExp(`^${dados.meuNome}$`, 'i') }
                 ]
             }).sort({ dataEnvio: 1 }).limit(50);
             
-            // Garante que vai devolver uma resposta, mesmo que seja array vazio []
             socket.emit('historico_privado_resposta', { contato: dados.contato, historico: historico || [] });
         } catch(err) { 
             console.error('Erro privado:', err); 
@@ -89,7 +89,7 @@ io.on('connection', (socket) => {
 
             let socketDestinatario = null;
             for (let [id, nome] of usuariosOnline.entries()) {
-                if (nome === dados.para) {
+                if (nome.toLowerCase() === dados.para.toLowerCase()) {
                     socketDestinatario = id;
                     break;
                 }
@@ -115,5 +115,5 @@ io.on('connection', (socket) => {
 
 const PORTA = process.env.PORT || 3000;
 server.listen(PORTA, () => {
-    console.log(`🚀 Servidor do ProChat rodando na porta ${PORTA}`);
+    console.log(`🚀 Servidor rodando na porta ${PORTA}`);
 });
