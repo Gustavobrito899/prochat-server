@@ -447,8 +447,8 @@
     <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
 
     <script>
-        // 1. CONECTANDO AO SERVIDOR BACKEND LOCAL
-        const socket = io(https://prochat-server-6bra.onrender.com);
+        // 1. CONECTANDO AO SERVIDOR BACKEND (CORRIGIDO: COM ASPAS)
+        const socket = io('https://prochat-server-6bra.onrender.com');
 
         socket.on('connect', () => {
             console.log('✅ Conectado ao servidor! Meu ID:', socket.id);
@@ -456,11 +456,9 @@
 
         // 2. OUVINDO MENSAGENS DO SERVIDOR
         socket.on('receber_mensagem', (dadosDaMensagem) => {
-            // Só adiciona na tela se não foi você mesmo que acabou de enviar
             if(dadosDaMensagem.remetenteId !== socket.id) {
                 if (!fakeDatabase[currentContact]) fakeDatabase[currentContact] = [];
                 
-                // Salva a mensagem como "recebida" no banco local
                 fakeDatabase[currentContact].push({ 
                     type: "received", 
                     text: dadosDaMensagem.texto, 
@@ -470,13 +468,11 @@
                 
                 ChatFlow.renderMessages();
                 
-                // Atualiza o preview na barra lateral
                 const previewElement = document.getElementById(currentContact.includes('Felipe') ? 'preview-Felipe' : 'preview-Hercília');
                 if (previewElement) previewElement.innerText = dadosDaMensagem.texto;
             }
         });
 
-        // --- BANCO DE DADOS LOCAL SIMULADO ---
         const fakeDatabase = {
             "Felipe (Coordenador)": [
                 { type: "notice", text: "As mensagens neste chat agora são protegidas por criptografia de ponta a ponta." },
@@ -607,7 +603,6 @@
                 
                 if (!fakeDatabase[currentContact]) fakeDatabase[currentContact] = [];
                 
-                // 3. ENVIANDO A MENSAGEM PARA O SERVIDOR BACKEND
                 if(!imageUrl) {
                     socket.emit('enviar_mensagem', {
                         texto: text,
