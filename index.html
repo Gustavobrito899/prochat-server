@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     
     <style>
-        /* [Seu CSS original mantido exatamente como estava] */
         :root {
             --bg-wallpaper: #F3F4F6; 
             --superficie: #FFFFFF;
@@ -99,7 +98,7 @@
         .story-name { font-size: 12px; font-weight: 400; color: var(--texto-secundario); }
 
         .search-bar { padding: 0 20px 16px 20px; }
-        .search-bar input { width: 100%; padding: 10px 16px 10px 36px; border: 1px solid var(--borda); border-radius: 6px; outline: none; background: var(--bg-wallpaper); color: var(--texto-principal); font-size: 14px; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="%236B7280" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>'); background-repeat: no-repeat; background-position: 12px center; }
+        .search-bar input { width: 100%; padding: 10px 16px 10px 36px; border: 1px solid var(--borda); border-radius: 6px; outline: none; background: var(--bg-wallpaper); color: var(--texto-principal); font-size: 14px; }
         .search-bar input:focus { border-color: var(--cor-primaria); background: var(--superficie); }
         
         .contact-list { flex-grow: 1; overflow-y: auto; }
@@ -118,13 +117,10 @@
         .chat-messages { flex-grow: 1; padding: 24px 8%; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;}
         .encryption-notice { align-self: center; background: transparent; padding: 6px 12px; font-size: 12px; color: var(--texto-secundario); margin-bottom: 16px; font-weight: 400;}
         .message { max-width: 65%; padding: 10px 14px; font-size: var(--tamanho-fonte-chat); line-height: 1.5; position: relative; word-wrap: break-word; border-radius: 12px; box-shadow: var(--sombra-leve);}
-        .message img { max-width: 100%; border-radius: 8px; margin-bottom: 8px; display: block;}
         .message.received { background: var(--superficie); align-self: flex-start; color: var(--texto-principal); border: 1px solid var(--borda); border-bottom-left-radius: 4px; }
         .message.sent { background: var(--msg-enviada); color: var(--cor-texto-botao); align-self: flex-end; display: flex; flex-direction: column; border-bottom-right-radius: 4px; border: 1px solid transparent;}
         .message-footer { display: flex; justify-content: flex-end; align-items: center; gap: 6px; margin-top: 4px; opacity: 0.8;}
         .message-time { font-size: 11px;}
-        .ticks svg { width: 14px; height: 14px; color: var(--cor-check-leitura); }
-        .message.sent .ticks svg { color: var(--cor-texto-botao); opacity: 0.9;} 
 
         /* INPUT AREA */
         .chat-input-area { padding: 16px 24px; display: flex; align-items: center; gap: 12px; background: var(--superficie); border-top: 1px solid var(--borda); z-index: 10;}
@@ -149,7 +145,7 @@
             .modal-content { height: 95vh; border-radius: 12px 12px 0 0; border-bottom: none; transform: translateY(100%); }
             .modal-overlay.active .modal-content { transform: translateY(0); align-self: flex-end;}
         }
-        /* Estilos extras das Tabs e Stories do seu código original aqui... */
+        
         .modal-header-ios { padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--borda); font-weight: 600; font-size: 16px;}
         .close-modal-text { color: var(--texto-secundario); cursor: pointer; font-size: 14px; font-weight: 500; padding: 6px 10px; border-radius: 6px; }
         .modal-tabs-ios { display: flex; padding: 12px 24px; background: var(--bg-wallpaper); gap: 8px; border-bottom: 1px solid var(--borda); overflow-x: auto;}
@@ -179,9 +175,9 @@
     <div id="auth-container" class="hidden">
         <div id="login-step">
             <div class="auth-logo">Entrar no ProChat</div>
-            <p class="auth-subtitle">Confirme seu número para continuar.</p>
+            <p class="auth-subtitle">Confirme seu nome para continuar.</p>
             <div class="input-group">
-                <input type="text" id="user-contact" placeholder="Seu número ou e-mail">
+                <input type="text" id="user-contact" placeholder="Seu nome">
             </div>
             <button class="btn-primary" onclick="AuthFlow.requestOTP()">Avançar</button>
         </div>
@@ -209,7 +205,7 @@
         <aside class="sidebar">
             <header class="sidebar-header">
                 <div class="user-profile" onclick="event.stopPropagation(); ModalFlow.open('tab-profile')">
-                    <div class="avatar">G</div>
+                    <div class="avatar" id="sidebar-avatar-letter">G</div>
                     <span id="sidebar-user-name">Gustavo</span>
                 </div>
                 <button class="icon-btn" onclick="event.stopPropagation(); ModalFlow.open('tab-appearance')" title="Configurações">
@@ -224,34 +220,21 @@
                     <div class="story-avatar-wrap add-new"><div class="story-avatar add-btn">+</div></div>
                     <span class="story-name">Adicionar</span>
                 </div>
-                </div>
+            </div>
 
             <div class="search-bar">
-                <input type="text" id="contact-search" placeholder="Pesquisar...">
+                <input type="text" id="contact-search" placeholder="Pesquisar contatos...">
             </div>
 
             <div class="contact-list" id="contact-list-container">
-                <div class="contact-item active" onclick="ChatFlow.switchContact('Geral')">
-                    <div class="avatar-container">
-                        <div class="avatar" style="background-image: url('https://cdn-icons-png.flaticon.com/512/2352/2352167.png'); color: transparent;">G</div>
-                        <div class="note-bubble">PROCHAT</div>
-                    </div>
-                    <div style="flex-grow: 1; overflow: hidden;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div class="contact-name">Grupo Geral</div>
-                            <span style="font-size: 12px; color: var(--texto-secundario);">Agora</span>
-                        </div>
-                        <div class="contact-msg" id="preview-Geral">Conectado ao MongoDB</div>
-                    </div>
                 </div>
-            </div>
         </aside>
 
         <main class="chat-area">
             <header class="chat-header">
                 <div style="display: flex; align-items: center;">
                     <button class="icon-btn back-btn-mobile" style="display: none;" onclick="MobileFlow.closeChat()">←</button>
-                    <div class="avatar" id="current-chat-avatar" style="background-image: url('https://cdn-icons-png.flaticon.com/512/2352/2352167.png'); width: 40px; height: 40px; margin-right: 12px;"></div>
+                    <div class="avatar" id="current-chat-avatar" style="background-image: url('https://cdn-icons-png.flaticon.com/512/2352/2352167.png'); width: 40px; height: 40px; margin-right: 12px; font-size: 18px; color: transparent;">G</div>
                     <div>
                         <h3 style="font-size: 16px; font-weight: 600;" id="current-chat-name">Grupo Geral</h3>
                         <div id="current-chat-status" style="font-size: 13px; color: var(--status-online);">Conectado</div>
@@ -301,8 +284,9 @@
     <script>
         const socket = io('https://prochat-server-6bra.onrender.com');
         let userName = "Gustavo";
+        let currentContact = "Geral";
 
-        // --- SISTEMA DE RENDERIZAÇÃO CORRIGIDO ---
+        // --- RENDERIZAR MENSAGENS NA TELA ---
         function renderizarMensagemSingle(dados) {
             const container = document.getElementById('chat-messages-container');
             const isMe = dados.nome === userName;
@@ -317,17 +301,78 @@
             `;
             container.appendChild(msgDiv);
             container.scrollTop = container.scrollHeight;
-            const preview = document.getElementById('preview-Geral');
-            if(preview) preview.innerText = `${dados.nome}: ${dados.texto}`;
         }
 
+        // --- EVENTOS DO BACKEND ---
         socket.on('historico_mensagens', (historico) => {
             const container = document.getElementById('chat-messages-container');
-            container.innerHTML = '<div class="encryption-notice">Mensagens carregadas do MongoDB Atlas.</div>';
+            container.innerHTML = '<div class="encryption-notice">Mensagens do Grupo Geral.</div>';
             historico.forEach(renderizarMensagemSingle);
         });
 
-        socket.on('receber_mensagem', renderizarMensagemSingle);
+        socket.on('receber_mensagem', (dados) => {
+            if(currentContact === 'Geral') renderizarMensagemSingle(dados);
+            const preview = document.getElementById('preview-Geral');
+            if(preview) preview.innerText = `${dados.nome}: ${dados.texto}`;
+        });
+
+        // Eventos Privados
+        socket.on('historico_privado_resposta', (dados) => {
+            if (currentContact === dados.contato) {
+                const container = document.getElementById('chat-messages-container');
+                container.innerHTML = `<div class="encryption-notice">Chat privado com ${dados.contato}</div>`;
+                dados.historico.forEach(renderizarMensagemSingle);
+            }
+        });
+
+        socket.on('receber_mensagem_privada', (dados) => {
+            if (currentContact === dados.contatoOriginal) {
+                renderizarMensagemSingle(dados);
+            }
+            const preview = document.getElementById(`preview-${dados.contatoOriginal}`);
+            if(preview) preview.innerText = `${dados.texto}`;
+        });
+
+        // ATUALIZAR LISTA LATERAL DE USUÁRIOS
+        socket.on('lista_usuarios', (usuarios) => {
+            const container = document.getElementById('contact-list-container');
+            
+            // Sempre mantém o Grupo Geral no topo
+            let html = `
+                <div class="contact-item ${currentContact === 'Geral' ? 'active' : ''}" onclick="ChatFlow.switchContact('Geral')">
+                    <div class="avatar-container">
+                        <div class="avatar" style="background-image: url('https://cdn-icons-png.flaticon.com/512/2352/2352167.png'); color: transparent;">G</div>
+                        <div class="note-bubble">PROCHAT</div>
+                    </div>
+                    <div style="flex-grow: 1; overflow: hidden;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div class="contact-name">Grupo Geral</div>
+                        </div>
+                        <div class="contact-msg" id="preview-Geral">Chat público</div>
+                    </div>
+                </div>`;
+
+            // Adiciona as pessoas que estão online
+            usuarios.forEach(user => {
+                if(user !== userName) { // Não mostra você mesmo na lista
+                    const primeiraLetra = user.charAt(0).toUpperCase();
+                    html += `
+                        <div class="contact-item ${currentContact === user ? 'active' : ''}" onclick="ChatFlow.switchContact('${user}')">
+                            <div class="avatar-container">
+                                <div class="avatar" style="background: var(--cor-secundaria);">${primeiraLetra}</div>
+                            </div>
+                            <div style="flex-grow: 1; overflow: hidden;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div class="contact-name">${user}</div>
+                                    <span style="font-size: 12px; color: var(--status-online);">Online</span>
+                                </div>
+                                <div class="contact-msg" id="preview-${user}">Toque para conversar</div>
+                            </div>
+                        </div>`;
+                }
+            });
+            container.innerHTML = html;
+        });
 
         // --- AUTH FLOW ---
         const AuthFlow = {
@@ -336,6 +381,7 @@
                 if(contact.length < 3) return alert('Insira um nome válido.');
                 userName = contact;
                 document.getElementById('sidebar-user-name').innerText = userName;
+                document.getElementById('sidebar-avatar-letter').innerText = userName.charAt(0).toUpperCase();
                 document.getElementById('login-step').classList.add('hidden');
                 document.getElementById('otp-step').classList.remove('hidden');
             },
@@ -356,6 +402,10 @@
             verifyOTP: () => {
                 document.getElementById('auth-container').classList.add('hidden');
                 document.getElementById('main-app').classList.remove('hidden');
+                
+                // NOVO: Avisa o servidor quem você é!
+                socket.emit('registrar_usuario', userName);
+                socket.emit('pedir_historico_geral');
             }
         };
 
@@ -365,19 +415,49 @@
                 const input = document.getElementById('message-input');
                 const text = input.value.trim();
                 if(!text) return;
-                socket.emit('enviar_mensagem', {
+
+                const dados = {
                     nome: userName,
                     texto: text,
                     hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                });
+                };
+
+                if(currentContact === 'Geral') {
+                    socket.emit('enviar_mensagem', dados);
+                } else {
+                    // Prepara pacote para mensagem privada
+                    dados.de = userName;
+                    dados.para = currentContact;
+                    socket.emit('enviar_mensagem_privada', dados);
+                }
+                
                 input.value = '';
             },
             switchContact: (name) => {
+                currentContact = name;
+                document.getElementById('current-chat-name').innerText = name;
+                
+                const avatarEle = document.getElementById('current-chat-avatar');
+                if(name === 'Geral') {
+                    document.getElementById('current-chat-status').innerText = 'Conectado';
+                    avatarEle.style.backgroundImage = "url('https://cdn-icons-png.flaticon.com/512/2352/2352167.png')";
+                    avatarEle.style.color = "transparent";
+                    socket.emit('pedir_historico_geral');
+                } else {
+                    document.getElementById('current-chat-status').innerText = 'Online';
+                    avatarEle.style.backgroundImage = "none";
+                    avatarEle.innerText = name.charAt(0).toUpperCase();
+                    avatarEle.style.color = "#fff";
+                    socket.emit('pedir_historico_privado', name);
+                }
+
+                // Efeito visual na lista
+                document.querySelectorAll('.contact-item').forEach(el => el.classList.remove('active'));
+                
                 if(window.innerWidth <= 768) document.getElementById('main-app').classList.add('show-chat');
             }
         };
 
-        // --- MODAL FLOW (MANTIDO) ---
         const ModalFlow = {
             open: (tabId) => {
                 document.getElementById('settings-modal').classList.add('active');
@@ -397,7 +477,6 @@
 
         const MobileFlow = { closeChat: () => document.getElementById('main-app').classList.remove('show-chat') };
 
-        // Listeners
         document.getElementById('send-btn').addEventListener('click', ChatFlow.sendText);
         document.getElementById('message-input').addEventListener('keypress', e => { if (e.key === 'Enter') ChatFlow.sendText(); });
         document.getElementById('theme-toggle').addEventListener('change', (e) => { 
