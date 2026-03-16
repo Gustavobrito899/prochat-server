@@ -261,31 +261,17 @@
             </div>
 
             <div class="contact-list" id="contact-list-container">
-                <div class="contact-item active contact-filterable" onclick="event.stopPropagation(); ChatFlow.switchContact('Felipe (Coordenador)', 'https://i.pravatar.cc/100?img=33', 'Online', this)">
+                <div class="contact-item active contact-filterable" onclick="event.stopPropagation(); ChatFlow.switchContact('Geral', 'https://cdn-icons-png.flaticon.com/512/2352/2352167.png', 'Online', this)">
                     <div class="avatar-container">
-                        <div class="avatar" style="background-image: url('https://i.pravatar.cc/100?img=33'); color: transparent;">F</div>
-                        <div class="note-bubble">UNAMA</div>
+                        <div class="avatar" style="background-image: url('https://cdn-icons-png.flaticon.com/512/2352/2352167.png'); color: transparent;">G</div>
+                        <div class="note-bubble">PROCHAT</div>
                     </div>
                     <div style="flex-grow: 1; overflow: hidden;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div class="contact-name">Felipe (Coordenador)</div>
-                            <span style="font-size: 12px; color: var(--texto-secundario);">11:09</span>
+                            <div class="contact-name">Grupo Geral</div>
+                            <span style="font-size: 12px; color: var(--texto-secundario);" id="last-msg-time">Agora</span>
                         </div>
-                        <div class="contact-msg" id="preview-Felipe">Resolvido o bug de camadas.</div>
-                    </div>
-                </div>
-                
-                <div class="contact-item contact-filterable" onclick="event.stopPropagation(); ChatFlow.switchContact('Prof. Hercília', 'https://i.pravatar.cc/100?img=44', 'Visto por último hoje', this)">
-                    <div class="avatar-container">
-                        <div class="avatar" style="background-image: url('https://i.pravatar.cc/100?img=44'); color: transparent;">H</div>
-                        <div class="note-bubble">Sociologia</div>
-                    </div>
-                    <div style="flex-grow: 1; overflow: hidden;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div class="contact-name">Prof. Hercília</div>
-                            <span style="font-size: 12px; color: var(--texto-secundario);">Ontem</span>
-                        </div>
-                        <div class="contact-msg" id="preview-Hercília">Gustavo, entregue o trabalho na plataforma.</div>
+                        <div class="contact-msg" id="preview-Geral">Bem-vindo ao banco de dados!</div>
                     </div>
                 </div>
             </div>
@@ -297,10 +283,10 @@
                     <button class="icon-btn back-btn-mobile" onclick="event.stopPropagation(); MobileFlow.closeChat()">
                         <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
                     </button>
-                    <div class="avatar" id="current-chat-avatar" style="background-image: url('https://i.pravatar.cc/100?img=33'); width: 40px; height: 40px; margin-right: 12px;"></div>
+                    <div class="avatar" id="current-chat-avatar" style="background-image: url('https://cdn-icons-png.flaticon.com/512/2352/2352167.png'); width: 40px; height: 40px; margin-right: 12px;"></div>
                     <div>
-                        <h3 style="font-size: 16px; font-weight: 600;" id="current-chat-name">Felipe (Coordenador)</h3>
-                        <div id="current-chat-status" style="font-size: 13px; color: var(--texto-secundario);">Online</div>
+                        <h3 style="font-size: 16px; font-weight: 600;" id="current-chat-name">Grupo Geral</h3>
+                        <div id="current-chat-status" style="font-size: 13px; color: var(--status-online);">Conectado ao MongoDB</div>
                     </div>
                 </div>
                 <button class="icon-btn" onclick="event.stopPropagation(); ModalFlow.open('tab-profile')" title="Mais opções">
@@ -447,43 +433,54 @@
     <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
 
     <script>
-        // 1. CONECTANDO AO SERVIDOR BACKEND (CORRIGIDO: COM ASPAS)
+        // 1. CONECTANDO AO SERVIDOR BACKEND
         const socket = io('https://prochat-server-6bra.onrender.com');
+
+        let currentContact = "Geral";
+        let userName = "Gustavo";
 
         socket.on('connect', () => {
             console.log('✅ Conectado ao servidor! Meu ID:', socket.id);
         });
 
-        // 2. OUVINDO MENSAGENS DO SERVIDOR
-        socket.on('receber_mensagem', (dadosDaMensagem) => {
-            if(dadosDaMensagem.remetenteId !== socket.id) {
-                if (!fakeDatabase[currentContact]) fakeDatabase[currentContact] = [];
-                
-                fakeDatabase[currentContact].push({ 
-                    type: "received", 
-                    text: dadosDaMensagem.texto, 
-                    image: null, 
-                    time: dadosDaMensagem.hora 
-                });
-                
-                ChatFlow.renderMessages();
-                
-                const previewElement = document.getElementById(currentContact.includes('Felipe') ? 'preview-Felipe' : 'preview-Hercília');
-                if (previewElement) previewElement.innerText = dadosDaMensagem.texto;
-            }
+        // --- SISTEMA DE RENDERIZAÇÃO DE MENSAGENS DO BANCO ---
+        socket.on('historico_mensagens', (historico) => {
+            const container = document.getElementById('chat-messages-container');
+            container.innerHTML = '<div class="encryption-notice">Mensagens carregadas do MongoDB Atlas.</div>';
+            
+            historico.forEach(dados => {
+                renderizarMensagemSingle(dados);
+            });
         });
 
-        const fakeDatabase = {
-            "Felipe (Coordenador)": [
-                { type: "notice", text: "As mensagens neste chat agora são protegidas por criptografia de ponta a ponta." },
-                { type: "received", text: "Resolvido o bug de camadas. Agora as configurações estão separadas perfeitamente.", time: "11:00" }
-            ],
-            "Prof. Hercília": [
-                { type: "notice", text: "As mensagens neste chat agora são protegidas por criptografia de ponta a ponta." },
-                { type: "received", text: "Gustavo, entregue o trabalho na plataforma.", time: "Ontem" }
-            ]
-        };
-        let currentContact = "Felipe (Coordenador)";
+        socket.on('receber_mensagem', (dados) => {
+            renderizarMensagemSingle(dados);
+        });
+
+        function renderizarMensagemSingle(dados) {
+            const container = document.getElementById('chat-messages-container');
+            const isMe = dados.nome === userName;
+            const doubleCheckSVG = `<svg viewBox="0 0 18 18" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4.5l-9.5 9.5-4-4M10 4.5l-4 4"/></svg>`;
+
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${isMe ? 'sent' : 'received'} fade-in`;
+            
+            msgDiv.innerHTML = `
+                <div style="font-size: 11px; font-weight: 600; margin-bottom: 4px; opacity: 0.8;">${dados.nome}</div>
+                ${dados.texto}
+                <div class="message-footer">
+                    <span class="message-time">${dados.hora || 'S/H'}</span>
+                    ${isMe ? `<span class="ticks">${doubleCheckSVG}</span>` : ''}
+                </div>
+            `;
+
+            container.appendChild(msgDiv);
+            container.scrollTop = container.scrollHeight;
+            
+            // Atualiza preview lateral
+            const preview = document.getElementById('preview-Geral');
+            if(preview) preview.innerText = `${dados.nome}: ${dados.texto}`;
+        }
 
         window.onload = () => {
             setTimeout(() => {
@@ -491,13 +488,14 @@
                 document.getElementById('auth-container').classList.remove('hidden');
                 document.getElementById('auth-container').classList.add('fade-in');
             }, 600);
-            ChatFlow.renderMessages(); 
         };
 
         const AuthFlow = {
             requestOTP: () => {
                 const contact = document.getElementById('user-contact').value.trim();
-                if(contact.length < 5) return alert('Insira um contato válido.');
+                if(contact.length < 3) return alert('Insira um nome válido.');
+                userName = contact; // Define o nome do usuário
+                document.getElementById('sidebar-user-name').innerText = userName;
                 document.getElementById('login-step').classList.add('hidden');
                 document.getElementById('otp-step').classList.remove('hidden');
             },
@@ -507,7 +505,6 @@
             },
             moveToNext: (input, index) => {
                 const inputs = document.querySelectorAll('.otp-inputs input');
-                input.value = input.value.replace(/[^0-9]/g, '');
                 if(input.value.length === 1 && index < inputs.length - 1) { 
                     inputs[index + 1].disabled = false; 
                     inputs[index + 1].focus(); 
@@ -524,142 +521,34 @@
                 document.getElementById('main-app').classList.remove('hidden');
                 document.getElementById('main-app').classList.add('fade-in');
             },
-            logout: () => {
-                ModalFlow.close(); 
-                setTimeout(() => {
-                    document.getElementById('main-app').classList.add('hidden');
-                    document.getElementById('auth-container').classList.remove('hidden');
-                    AuthFlow.goBack();
-                    document.querySelectorAll('.otp-inputs input').forEach((i, idx) => { i.value = ''; if(idx > 0) i.disabled = true; });
-                    document.getElementById('user-contact').value = '';
-                }, 300); 
+            logout: () => location.reload(),
+            escapeHTML: (str) => str.replace(/[&<>'"]/g, tag => ({'&': '&amp;','<': '&lt;','>': '&gt;',"'": '&#39;','"': '&quot;'}[tag]))
+        };
+
+        const ChatFlow = {
+            sendText: () => {
+                const input = document.getElementById('message-input');
+                const text = input.value.trim();
+                if(!text) return;
+                
+                const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                
+                socket.emit('enviar_mensagem', {
+                    nome: userName,
+                    texto: text,
+                    hora: timeStr
+                });
+
+                input.value = '';
             },
-            escapeHTML: (str) => {
-                return str.replace(/[&<>'"]/g, tag => ({'&': '&amp;','<': '&lt;','>': '&gt;',"'": '&#39;','"': '&quot;'}[tag]));
+            switchContact: (name) => {
+                if(window.innerWidth <= 768) document.getElementById('main-app').classList.add('show-chat');
             }
         };
 
         const MobileFlow = {
-            openChat: () => { if(window.innerWidth <= 768) document.getElementById('main-app').classList.add('show-chat'); },
-            closeChat: () => { document.getElementById('main-app').classList.remove('show-chat'); }
+            closeChat: () => document.getElementById('main-app').classList.remove('show-chat')
         };
-
-        const SearchFlow = {
-            filterContacts: () => {
-                const query = document.getElementById('contact-search').value.toLowerCase();
-                document.querySelectorAll('.contact-filterable').forEach(contact => {
-                    const name = contact.querySelector('.contact-name').innerText.toLowerCase();
-                    contact.style.display = name.includes(query) ? 'flex' : 'none';
-                });
-            }
-        };
-
-        const ChatFlow = {
-            renderMessages: () => {
-                const container = document.getElementById('chat-messages-container');
-                container.innerHTML = ''; 
-                const history = fakeDatabase[currentContact] || [];
-                const doubleCheckSVG = `<svg viewBox="0 0 18 18" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4.5l-9.5 9.5-4-4M10 4.5l-4 4"/></svg>`;
-
-                history.forEach(msg => {
-                    const safeText = AuthFlow.escapeHTML(msg.text);
-                    if(msg.type === "notice") {
-                        container.innerHTML += `<div class="encryption-notice">${safeText}</div>`;
-                    } else if (msg.type === "received") {
-                        let content = msg.image ? `<img src="${msg.image}" alt="Enviada imagem"> ${safeText}` : safeText;
-                        container.innerHTML += `<div class="message received">${content} <div class="message-footer"><span class="message-time">${msg.time}</span></div></div>`;
-                    } else if (msg.type === "sent") {
-                        let content = msg.image ? `<img src="${msg.image}" alt="Recebida imagem"> ${safeText}` : safeText;
-                        container.innerHTML += `<div class="message sent fade-in">${content}<div class="message-footer"><span class="message-time">${msg.time}</span><span class="ticks">${doubleCheckSVG}</span></div></div>`;
-                    }
-                });
-                container.scrollTop = container.scrollHeight;
-            },
-
-            switchContact: (name, avatarUrl, statusText, element) => {
-                currentContact = name;
-                document.getElementById('current-chat-name').innerText = name;
-                document.getElementById('current-chat-avatar').style.backgroundImage = `url('${avatarUrl}')`;
-                document.getElementById('current-chat-status').innerText = statusText;
-                
-                document.querySelectorAll('.contact-item').forEach(c => c.classList.remove('active'));
-                element.classList.add('active');
-                
-                ChatFlow.renderMessages();
-                MobileFlow.openChat();
-            },
-
-            sendText: () => {
-                const input = document.getElementById('message-input');
-                const text = input.value.trim();
-                if(text === '') return;
-                
-                ChatFlow.saveAndRenderMessage(text, null);
-                input.value = '';
-            },
-
-            saveAndRenderMessage: (text, imageUrl) => {
-                const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                
-                if (!fakeDatabase[currentContact]) fakeDatabase[currentContact] = [];
-                
-                if(!imageUrl) {
-                    socket.emit('enviar_mensagem', {
-                        texto: text,
-                        hora: timeStr,
-                        contatoDestino: currentContact,
-                        remetenteId: socket.id
-                    });
-                }
-                
-                fakeDatabase[currentContact].push({ type: "sent", text: text, image: imageUrl, time: timeStr });
-                ChatFlow.renderMessages();
-                
-                const previewElement = document.getElementById(currentContact.includes('Felipe') ? 'preview-Felipe' : 'preview-Hercília');
-                if (previewElement) previewElement.innerText = imageUrl ? "📷 Foto" : text;
-            }
-        };
-
-        document.getElementById('send-btn').addEventListener('click', ChatFlow.sendText);
-        document.getElementById('message-input').addEventListener('keypress', e => { if (e.key === 'Enter') ChatFlow.sendText(); });
-
-        document.getElementById('image-upload-input').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file && file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = e => ChatFlow.saveAndRenderMessage("", e.target.result);
-                reader.readAsDataURL(file);
-            }
-            this.value = '';
-        });
-
-        document.getElementById('status-upload-input').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file && file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const newStory = document.createElement('div');
-                    newStory.className = 'story-item fade-in';
-                    newStory.innerHTML = `<div class="story-avatar-wrap" style="border-color: var(--cor-primaria);"><div class="story-avatar" style="background-image: url('${e.target.result}');"></div></div><span class="story-name">Você</span>`;
-                    newStory.onclick = (clickEvent) => {
-                        clickEvent.stopPropagation();
-                        document.getElementById('story-overlay').classList.add('active');
-                        document.getElementById('story-user-name-display').innerText = "Meu Status";
-                        document.getElementById('story-image-container').style.backgroundImage = `url('${e.target.result}')`;
-                        
-                        const fill = document.getElementById('story-progress-fill');
-                        fill.style.transition = 'none'; fill.style.width = '0%';
-                        void fill.offsetWidth;
-                        setTimeout(() => { fill.style.transition = 'width 5s linear'; fill.style.width = '100%'; }, 50);
-                        clearTimeout(storyTimer);
-                        storyTimer = setTimeout(() => { document.getElementById('story-overlay').classList.remove('active'); }, 5000);
-                    };
-                    document.getElementById('stories-bar-container').appendChild(newStory);
-                }
-                reader.readAsDataURL(file);
-            }
-            this.value = '';
-        });
 
         const ModalFlow = {
             open: (tabId) => {
@@ -673,30 +562,9 @@
             close: () => document.getElementById('settings-modal').classList.remove('active'),
             closeOutside: (e) => { if(e.target.id === 'settings-modal') ModalFlow.close(); }
         };
-        
-        document.querySelectorAll('.modal-tab').forEach(tab => { 
-            tab.addEventListener('click', (e) => { e.stopPropagation(); ModalFlow.open(tab.getAttribute('data-target')); }); 
-        });
 
-        let storyTimer;
-        const StoryFlow = {
-            open: (userName) => {
-                document.getElementById('story-overlay').classList.add('active');
-                document.getElementById('story-user-name-display').innerText = userName;
-                document.getElementById('story-image-container').style.backgroundImage = userName === 'Felipe' ? "url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80')" : "url('https://images.unsplash.com/photo-1577563908411-5077b6dc7624?auto=format&fit=crop&w=800&q=80')"; 
-                const fill = document.getElementById('story-progress-fill');
-                fill.style.transition = 'none'; fill.style.width = '0%';
-                void fill.offsetWidth;
-                setTimeout(() => { fill.style.transition = 'width 5s linear'; fill.style.width = '100%'; }, 50);
-                clearTimeout(storyTimer);
-                storyTimer = setTimeout(() => { document.getElementById('story-overlay').classList.remove('active'); }, 5000);
-            },
-            close: () => { document.getElementById('story-overlay').classList.remove('active'); clearTimeout(storyTimer); }
-        };
-
-        document.getElementById('input-profile-name').addEventListener('input', (e) => { document.getElementById('sidebar-user-name').innerText = AuthFlow.escapeHTML(e.target.value || 'Usuário'); });
-        document.getElementById('font-size-select').addEventListener('change', (e) => { document.documentElement.style.setProperty('--tamanho-fonte-chat', e.target.value); });
-        document.getElementById('read-receipt-toggle').addEventListener('change', (e) => { document.documentElement.style.setProperty('--cor-check-leitura', e.target.checked ? '#3B82F6' : 'var(--texto-secundario)'); });
+        document.getElementById('send-btn').addEventListener('click', ChatFlow.sendText);
+        document.getElementById('message-input').addEventListener('keypress', e => { if (e.key === 'Enter') ChatFlow.sendText(); });
         document.getElementById('theme-toggle').addEventListener('change', (e) => { e.target.checked ? document.documentElement.setAttribute('data-theme', 'dark') : document.documentElement.removeAttribute('data-theme'); });
 
     </script>
